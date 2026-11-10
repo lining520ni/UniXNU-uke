@@ -73,7 +73,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: Allenwdk/UniXNU
-          ref: uke-gpu
+          ref: main
           path: UniXNU
 
       - name: Record the UniXNU revision
@@ -223,7 +223,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: Allenwdk/UniXNU
-          ref: uke-gpu
+          ref: main
           path: UniXNU
 
       - name: Record the UniXNU revision
