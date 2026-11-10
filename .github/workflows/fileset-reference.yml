@@ -69,6 +69,17 @@ jobs:
           ./unixnu build kernel --skip-prelink -D ../UniXNU-uke || true
           ls -l out/uke/tree/build/xnu/ios-obj/DEVELOPMENT_ARM64_BCM2837/ | head -5
 
+      - name: Build the source archives the reference links
+        working-directory: UniXNU/out/uke/ipados-27.0.1-24A446/bootstrap/tree
+        run: |
+          python3 scripts/gen-touch-firmware.py
+          python3 scripts/build-corecrypto-14.py
+          python3 scripts/build-corecrypto-14.py --namespace
+          python3 scripts/build-libpthread-kernel.py || true
+          python3 scripts/build-arm-driver.py ArmDTPlatform
+          python3 scripts/build-arm-driver.py ArmCpu
+          ls -l build/corecrypto-2023/*.a build/libpthread-kernel/*.a                 build/armdt-platform/*.a build/armcpu/*.a
+
       - name: Build the symbol-bearing reference kernel
         working-directory: UniXNU/out/uke/ipados-27.0.1-24A446/bootstrap/tree
         run: |
