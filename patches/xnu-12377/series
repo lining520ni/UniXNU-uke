@@ -60,4 +60,6 @@ zzzzzz-sheng-latency-trace.patch
 zzzzzzzz-sheng-exit-latency.patch
 zzzzzzzzz-sheng-unnest-trace.patch
 
-# Weak definitions for the symbols the device archives normally provide: the archive-free\n# bootstrap pass has none, and ld refuses the weak_import references without them.\nzzzzzzzzzzzz-uke-bootstrap-stubs.patch
+# Weak definitions for the symbols the device archives normally provide: the archive-free
+# bootstrap pass has none, and ld refuses the weak_import references without them.
+zzzzzzzzzzzz-uke-bootstrap-stubs.patch
