@@ -18,3 +18,10 @@ CONFIG_XNU_ARMVIRT_PLATFORM=n
 # CONFIG_XNU_BOOT_PROGRESS is not set
 # CONFIG_XNU_VERIFIED_ROOT_PROBE is not set
 # CONFIG_XNU_SOURCE_MOCKFS is not set
+
+# The arm64 arch fragment forces CONFIG_XNU_NATIVE_ARCH_TIMER=y for every configuration, but this
+# bootstrap pass links without any device archives, so there is no ArmCpu interrupt provider and
+# build-xnu-4k-baseline.sh refuses the mismatch. The board's archive list is not run in this pass
+# either: it needs the candidate that this pass produces.
+# CONFIG_XNU_NATIVE_ARCH_TIMER is not set
+# CONFIG_XNU_BUILD_ARCHIVES is not set
