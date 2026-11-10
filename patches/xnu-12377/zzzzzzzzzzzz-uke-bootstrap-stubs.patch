@@ -1,0 +1,30 @@
+--- a/bsd/kern/bsd_init.c
++++ b/bsd/kern/bsd_init.c
+@@ -1815,3 +1815,15 @@
+ 	return 0;
+ }
+ #endif
++
++/* uke-bootstrap-stubs */
++/* Device archives provide these in the shipping build; the bootstrap pass has none. Weak so a
++ * real definition always wins. */
++__attribute__((weak)) volatile uint32_t boot_log_rounds = 0;
++__attribute__((weak)) void native_source_storage_start(void) { }
++__attribute__((weak)) void uke_boot_stage(const char *stage) { (void)stage; }
++__attribute__((weak)) void uke_boot_stage_bind(uintptr_t a, unsigned b, unsigned c, unsigned d, unsigned e)
++{
++	(void)a; (void)b; (void)c; (void)d; (void)e;
++}
++__attribute__((weak)) void uke_boot_stage_unbind(void) { }
+--- a/iokit/Kernel/IOUserClient.cpp
++++ b/iokit/Kernel/IOUserClient.cpp
+@@ -6981,3 +6981,9 @@
+ }
+ }
+ #endif
++
++/* uke-bootstrap-stub */
++/* Display archive provides this in the shipping build. */
++__attribute__((weak))
++void native_legacy_method_trace(IOUserClient *, uint32_t, const IOExternalMethodArguments *,
++    uint32_t, unsigned) { }
