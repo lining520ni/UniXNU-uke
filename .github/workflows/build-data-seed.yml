@@ -44,7 +44,7 @@ jobs:
 
       - name: Fetch the OS member
         working-directory: UniXNU
-        run: ./unixnu ipsw fetch OS -D ../UniXNU-uke | tee /tmp/os-member.txt
+        run: ./unixnu ipsw fetch OS -D ../UniXNU-uke --os ipados-17.7.11-21H461 | tee /tmp/os-member.txt
 
       - name: Decrypt the image when the IPSW ships it as AEA
         working-directory: UniXNU
