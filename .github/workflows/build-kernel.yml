@@ -62,10 +62,10 @@ jobs:
       # build keeps the pre-patch (empty) flags.
       HOST_COMPAT_CFLAGS: ''
       HOST_COMPAT_LIBS: ''
-  # The archive steps below run python directly, not through unixnu, so the target arch the
-  # driver normally exports has to be set here or kernel_target.py falls back to plain arm64.
-  UNIXNU_XNU_ARCH: arm64e
-  UNIXNU_IOS_VERSION: '27.0'
+      # The archive steps below run python directly, not through unixnu, so the target arch the
+      # driver normally exports has to be set here or kernel_target.py falls back to plain arm64.
+      UNIXNU_XNU_ARCH: arm64e
+      UNIXNU_IOS_VERSION: '27.0'
 
     steps:
       - name: Check out the device repository
@@ -227,10 +227,10 @@ jobs:
     env:
       HOST_COMPAT_CFLAGS: ''
       HOST_COMPAT_LIBS: ''
-  # The archive steps below run python directly, not through unixnu, so the target arch the
-  # driver normally exports has to be set here or kernel_target.py falls back to plain arm64.
-  UNIXNU_XNU_ARCH: arm64e
-  UNIXNU_IOS_VERSION: '27.0'
+      # The archive steps below run python directly, not through unixnu, so the target arch the
+      # driver normally exports has to be set here or kernel_target.py falls back to plain arm64.
+      UNIXNU_XNU_ARCH: arm64e
+      UNIXNU_IOS_VERSION: '27.0'
 
     steps:
       - name: Check out the device repository
