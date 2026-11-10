@@ -37,14 +37,29 @@ jobs:
 
       - name: Fetch the OS member
         working-directory: UniXNU
-        run: ./unixnu ipsw fetch OS -D ../UniXNU-uke
+        run: ./unixnu ipsw fetch OS -D ../UniXNU-uke | tee /tmp/os-member.txt
+
+      - name: Decrypt the image when the IPSW ships it as AEA
+        working-directory: UniXNU
+        run: |
+          OS=$(tail -1 /tmp/os-member.txt)
+          case "$OS" in
+            *.aea)
+              PLAIN=$(PYTHONPATH=scripts python3 -c 'import pathlib,sys; from unixnu.ipsw import decrypt_aea; print(decrypt_aea(pathlib.Path(sys.argv[1])))' "$OS" | tail -1)
+              rm -f "$OS"
+              OS="$PLAIN"
+              ;;
+          esac
+          df -h / | tail -1
+          test -f "$OS"
+          echo "OS_IMAGE=$OS" >> "$GITHUB_ENV"
 
       - name: Build the Data seed
         working-directory: UniXNU
         run: |
           mount=.cache/firmware/target-volumes/os-mount
           mkdir -p "$mount"
-          dmg=$(find out/ipsw -name '044-76040-038.dmg' -print -quit)
+          dmg="$OS_IMAGE"
           test -n "$dmg"
           echo "OS image: $dmg"
           hdiutil attach -readonly -nobrowse -mountpoint "$mount" "$dmg"
