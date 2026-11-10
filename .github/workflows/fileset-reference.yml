@@ -19,6 +19,8 @@ env:
   HOST_COMPAT_LIBS: ''
   UNIXNU_XNU_ARCH: arm64e
   UNIXNU_IOS_VERSION: '27.0'
+  # the profile pins libpthread-539.100.4; the archive builder refuses any other revision
+  UNIXNU_LIBPTHREAD_COMMIT: 1f4f5265b319111142f1bf3a27d4484ef5a98314
   HOMEBREW_NO_AUTO_UPDATE: 1
   HOMEBREW_NO_INSTALL_CLEANUP: 1
 
