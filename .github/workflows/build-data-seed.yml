@@ -31,6 +31,10 @@ jobs:
           path: UniXNU
           submodules: recursive
 
+      - name: Fetch the SoC feeds and module submodules
+        working-directory: UniXNU
+        run: ./unixnu fetch -D ../UniXNU-uke
+
       - name: Fetch the OS member
         working-directory: UniXNU
         run: ./unixnu ipsw fetch OS -D ../UniXNU-uke
