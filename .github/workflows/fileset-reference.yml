@@ -1,0 +1,88 @@
+name: build-uke-fileset-reference
+
+# The one input the repository has no workflow for: the symbol-bearing comparison kernel that
+# emit_prelink.py matches the Apple MH_FILESET kernelcache against. build-fileset-reference-27.py
+# builds it with xnu's own makefiles, so it needs macOS (xcodebuild + the iPhoneOS SDK).
+#
+# Output: out/uke/tree/build/xnu/fileset-reference/mach.release.bcm2837.unstripped.noctf
+# Place it at the path board.toml's [kernel.prelink] extra_args names, and prelink stops needing
+# --allow-missing.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  HOST_COMPAT_CFLAGS: ''
+  HOST_COMPAT_LIBS: ''
+  UNIXNU_XNU_ARCH: arm64e
+  UNIXNU_IOS_VERSION: '27.0'
+  HOMEBREW_NO_AUTO_UPDATE: 1
+  HOMEBREW_NO_INSTALL_CLEANUP: 1
+
+jobs:
+  reference:
+    runs-on: macos-latest
+    timeout-minutes: 300
+
+    steps:
+      - name: Check out the device repository
+        uses: actions/checkout@v4
+        with:
+          path: UniXNU-uke
+
+      - name: Check out UniXNU
+        uses: actions/checkout@v4
+        with:
+          repository: Allenwdk/UniXNU
+          ref: main
+          path: UniXNU
+
+      - name: Install the host tools
+        run: |
+          brew install cmake ninja unifdef llvm mtools dtc
+          echo "$(brew --prefix llvm)/bin" >> "$GITHUB_PATH"
+          echo "$(brew --prefix unifdef)/bin" >> "$GITHUB_PATH"
+
+      - name: Report the toolchain
+        run: |
+          sw_vers
+          xcodebuild -version
+          xcrun -sdk iphoneos -find mig || echo 'mig not found'
+
+      - name: Fetch the Apple references
+        working-directory: UniXNU
+        run: |
+          ./unixnu fetch xnu libplatform libdispatch AvailabilityVersions libpthread \
+                          corecrypto-2023 IOStorageFamily -D ../UniXNU-uke
+
+      - name: Fetch the target IPSW members
+        working-directory: UniXNU
+        run: ./unixnu ipsw fetch -D ../UniXNU-uke
+
+      - name: Bootstrap kernel (compile records only, no prelink)
+        working-directory: UniXNU
+        run: |
+          ./unixnu defconfig bootstrap_defconfig -D ../UniXNU-uke
+          ./unixnu build kernel --skip-prelink -D ../UniXNU-uke || true
+          ls -l out/uke/tree/build/xnu/ios-obj/DEVELOPMENT_ARM64_BCM2837/ | head -5
+
+      - name: Build the symbol-bearing reference kernel
+        working-directory: UniXNU/out/uke/tree
+        run: |
+          python3 scripts/build-fileset-reference-27.py
+          ls -l build/xnu/fileset-reference/ | head -10
+
+      - name: Upload the reference
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: uke-fileset-reference
+          path: |
+            UniXNU/out/uke/tree/build/xnu/fileset-reference/mach.release.bcm2837.unstripped.noctf
+            UniXNU/out/uke/tree/build/xnu/fileset-reference/*.log
+            UniXNU/out/uke/tree/build/xnu/fileset-reference/**/*.json
+          if-no-files-found: warn
+          retention-days: 14
