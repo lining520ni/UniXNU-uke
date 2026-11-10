@@ -70,7 +70,7 @@ jobs:
           ls -l out/uke/tree/build/xnu/ios-obj/DEVELOPMENT_ARM64_BCM2837/ | head -5
 
       - name: Build the symbol-bearing reference kernel
-        working-directory: UniXNU/out/uke/tree
+        working-directory: UniXNU/out/uke/ipados-27.0.1-24A446/bootstrap/tree
         run: |
           python3 scripts/build-fileset-reference-27.py
           ls -l build/xnu/fileset-reference/ | head -10
@@ -81,8 +81,8 @@ jobs:
         with:
           name: uke-fileset-reference
           path: |
-            UniXNU/out/uke/tree/build/xnu/fileset-reference/mach.release.bcm2837.unstripped.noctf
-            UniXNU/out/uke/tree/build/xnu/fileset-reference/*.log
-            UniXNU/out/uke/tree/build/xnu/fileset-reference/**/*.json
+            UniXNU/out/uke/ipados-27.0.1-24A446/bootstrap/tree/build/xnu/fileset-reference/mach.release.bcm2837.unstripped.noctf
+            UniXNU/out/uke/ipados-27.0.1-24A446/bootstrap/tree/build/xnu/fileset-reference/*.log
+            UniXNU/out/uke/ipados-27.0.1-24A446/bootstrap/tree/build/xnu/fileset-reference/**/*.json
           if-no-files-found: warn
           retention-days: 14
